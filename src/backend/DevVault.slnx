@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="DevVault.API/DevVault.API.csproj" />
+  <Project Path="DevVault.Application/DevVault.Application.csproj" />
+  <Project Path="DevVault.Domain/DevVault.Domain.csproj" />
+  <Project Path="DevVault.Infrastructure/DevVault.Infrastructure.csproj" />
+  <Project Path="DevVault.IntegrationTests/DevVault.IntegrationTests.csproj" />
+  <Project Path="DevVault.UnitTests/DevVault.UnitTests.csproj" />
+</Solution>
