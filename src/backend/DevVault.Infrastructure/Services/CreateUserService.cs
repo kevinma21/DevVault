@@ -1,4 +1,5 @@
 using DevVault.Application.DTOs.Auth;
+using DevVault.Application.DTOs.Common;
 using DevVault.Application.DTOs.Users;
 using DevVault.Application.Interfaces;
 using DevVault.Infrastructure.Identity;
@@ -65,6 +66,42 @@ public class UserService : IUserService
                 IsActive = user.IsActive,
                 Roles = new List<string> { role.Name! }
             }
+        };
+    }
+
+    public async Task<PagedResponse<UserResponseDto>> GetUsersAsync(int pageNumber, int pageSize)
+    {
+        // 1. Get the total count of users BEFORE applying limits (so the frontend knows how many pages exist)
+        var totalCount = _userManager.Users.Count();
+        // 2. Apply Skip and Take at the database level!
+        var users = _userManager.Users
+            .Skip((pageNumber - 1) *  pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        var userResponses = new List<UserResponseDto>();
+
+        foreach (var user in users)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            userResponses.Add(new UserResponseDto
+                {
+                    Id = user.Id,
+                    Email = user.Email!,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    IsActive = user.IsActive,
+                    Roles = roles.ToList()
+            });
+        }
+
+        // 3. Wrap the result in your new generic response    
+        return new PagedResponse<UserResponseDto>
+        {
+            Items = userResponses,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
         };
     }
 }

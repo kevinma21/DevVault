@@ -40,4 +40,23 @@ public class UsersController : ControllerBase
             data = result.Data
         });
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUsers([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
+    {
+        // Don't allow a malicious user to request a million records at once
+        if (pageSize > 100)
+        {
+            pageSize = 100;
+        }
+
+        var pagedResult = await _userService.GetUsersAsync(pageNumber, pageSize);
+
+        return Ok(new
+        {
+            success = true,
+            message = "Operation complete successfully.",
+            data = pagedResult
+        });
+    }
 }
