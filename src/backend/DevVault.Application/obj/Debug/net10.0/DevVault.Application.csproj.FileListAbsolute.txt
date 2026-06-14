@@ -1,0 +1,12 @@
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/bin/Debug/net10.0/DevVault.Application.deps.json
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/bin/Debug/net10.0/DevVault.Application.dll
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/bin/Debug/net10.0/DevVault.Application.pdb
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/obj/Debug/net10.0/DevVault.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/obj/Debug/net10.0/DevVault.Application.AssemblyInfoInputs.cache
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/obj/Debug/net10.0/DevVault.Application.AssemblyInfo.cs
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/obj/Debug/net10.0/DevVault.Application.csproj.CoreCompileInputs.cache
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/obj/Debug/net10.0/DevVault.Application.sourcelink.json
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/obj/Debug/net10.0/DevVault.Application.dll
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/obj/Debug/net10.0/refint/DevVault.Application.dll
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/obj/Debug/net10.0/DevVault.Application.pdb
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/obj/Debug/net10.0/ref/DevVault.Application.dll

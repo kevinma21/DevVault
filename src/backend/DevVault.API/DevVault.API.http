@@ -1,6 +1,39 @@
-@DevVault.API_HostAddress = http://localhost:5116
-
-GET {{DevVault.API_HostAddress}}/weatherforecast/
-Accept: application/json
+@host = http://localhost:5116
 
 ###
+
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "superAdmin@devvault.com",
+    "password": "SuperAdmin123!"
+}
+
+###
+
+POST {{host}}/api/v1/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMTY5ZDg1MC1jMWVhLTQ5ZWItODBhMi03NmRkZDBiODc0OWQiLCJlbWFpbCI6InN1cGVyQWRtaW5AZGV2dmF1bHQuY29tIiwianRpIjoiNGMxMDBhNDQtOTdmZC00NGViLWEzNGUtZWYwNjVlNzA2YjY0IiwiZmlyc3ROYW1lIjoiU3lzdGVtIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW5pc3RyYXRvciIsImV4cCI6MTc4MjA0Nzc4NiwiaXNzIjoiRGV2VmF1bHRBUEkiLCJhdWQiOiJEZXZWYXVsdFVzZXJzIn0.-2qZtM693m_FOlz-0LwPqIweFFi7KmFzh_3hWrHvS0o
+Content-Type: application/json
+
+{
+    "email": "john@example.com",
+    "password": "John123!",
+    "firstName": "John",
+    "lastName": "Doe",
+    "roleId": "51050ed4-c7fa-420c-ae5a-af2389d41e57"
+}
+
+###
+
+POST {{host}}/api/v1/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMTY5ZDg1MC1jMWVhLTQ5ZWItODBhMi03NmRkZDBiODc0OWQiLCJlbWFpbCI6InN1cGVyQWRtaW5AZGV2dmF1bHQuY29tIiwianRpIjoiNGMxMDBhNDQtOTdmZC00NGViLWEzNGUtZWYwNjVlNzA2YjY0IiwiZmlyc3ROYW1lIjoiU3lzdGVtIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW5pc3RyYXRvciIsImV4cCI6MTc4MjA0Nzc4NiwiaXNzIjoiRGV2VmF1bHRBUEkiLCJhdWQiOiJEZXZWYXVsdFVzZXJzIn0.-2qZtM693m_FOlz-0LwPqIweFFi7KmFzh_3hWrHvS0o
+Content-Type: application/json
+
+{
+    "email": "mike@example.com",
+    "password": "Mike123!",
+    "firstName": "Mike",
+    "lastName": "Loe",
+    "roleId": "91d10df9-ff40-4658-8530-22fd7d75c413"
+}

@@ -1,12 +1,15 @@
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/bin/Debug/net10.0/DevVault.Infrastructure.deps.json
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/bin/Debug/net10.0/DevVault.Infrastructure.dll
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/bin/Debug/net10.0/DevVault.Infrastructure.pdb
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/bin/Debug/net10.0/DevVault.Application.dll
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/bin/Debug/net10.0/DevVault.Application.pdb
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/obj/Debug/net10.0/DevVault.Infrastructure.csproj.AssemblyReference.cache
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/obj/Debug/net10.0/DevVault.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/obj/Debug/net10.0/DevVault.Infrastructure.AssemblyInfoInputs.cache
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/obj/Debug/net10.0/DevVault.Infrastructure.AssemblyInfo.cs
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/obj/Debug/net10.0/DevVault.Infrastructure.csproj.CoreCompileInputs.cache
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/obj/Debug/net10.0/DevVault.Infrastructure.sourcelink.json
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/obj/Debug/net10.0/DevVault.C8846F5D.Up2Date
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/obj/Debug/net10.0/DevVault.Infrastructure.dll
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/obj/Debug/net10.0/refint/DevVault.Infrastructure.dll
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/obj/Debug/net10.0/DevVault.Infrastructure.pdb

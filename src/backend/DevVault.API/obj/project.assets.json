@@ -892,10 +892,21 @@
           }
         }
       },
+      "DevVault.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/DevVault.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DevVault.Application.dll": {}
+        }
+      },
       "DevVault.Infrastructure/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
         "dependencies": {
+          "DevVault.Application": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.9",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "10.0.9",
           "Microsoft.EntityFrameworkCore": "10.0.9",
@@ -2966,6 +2977,11 @@
         "system.identitymodel.tokens.jwt.nuspec"
       ]
     },
+    "DevVault.Application/1.0.0": {
+      "type": "project",
+      "path": "../DevVault.Application/DevVault.Application.csproj",
+      "msbuildProject": "../DevVault.Application/DevVault.Application.csproj"
+    },
     "DevVault.Infrastructure/1.0.0": {
       "type": "project",
       "path": "../DevVault.Infrastructure/DevVault.Infrastructure.csproj",
@@ -2974,7 +2990,9 @@
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "DevVault.Application >= 1.0.0",
       "DevVault.Infrastructure >= 1.0.0",
+      "Microsoft.AspNetCore.Authentication.JwtBearer >= 10.0.9",
       "Microsoft.AspNetCore.OpenApi >= 10.0.8",
       "Microsoft.EntityFrameworkCore.Design >= 10.0.9",
       "Swashbuckle.AspNetCore >= 10.2.1"
@@ -3006,6 +3024,9 @@
           "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {
+            "/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/DevVault.Application.csproj": {
+              "projectPath": "/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/DevVault.Application.csproj"
+            },
             "/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/DevVault.Infrastructure.csproj": {
               "projectPath": "/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Infrastructure/DevVault.Infrastructure.csproj"
             }
@@ -3029,6 +3050,10 @@
         "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
+          "Microsoft.AspNetCore.Authentication.JwtBearer": {
+            "target": "Package",
+            "version": "[10.0.9, )"
+          },
           "Microsoft.AspNetCore.OpenApi": {
             "target": "Package",
             "version": "[10.0.8, )"

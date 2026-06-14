@@ -581,6 +581,16 @@
             "related": ".xml"
           }
         }
+      },
+      "DevVault.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/DevVault.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DevVault.Application.dll": {}
+        }
       }
     }
   },
@@ -1428,10 +1438,16 @@
         "system.identitymodel.tokens.jwt.8.0.1.nupkg.sha512",
         "system.identitymodel.tokens.jwt.nuspec"
       ]
+    },
+    "DevVault.Application/1.0.0": {
+      "type": "project",
+      "path": "../DevVault.Application/DevVault.Application.csproj",
+      "msbuildProject": "../DevVault.Application/DevVault.Application.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "DevVault.Application >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 10.0.9",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 10.0.9",
       "Microsoft.EntityFrameworkCore >= 10.0.9",
@@ -1463,7 +1479,11 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/DevVault.Application.csproj": {
+              "projectPath": "/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/DevVault.Application.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

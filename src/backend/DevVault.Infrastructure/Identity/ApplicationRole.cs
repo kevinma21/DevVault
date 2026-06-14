@@ -4,5 +4,5 @@ namespace DevVault.Infrastructure.Identity;
 
 public class ApplicationRole : IdentityRole
 {
-    public string description { get; set; } = string.Empty;   
+    public string Description { get; set; } = string.Empty;   
 }
