@@ -59,4 +59,71 @@ public class UsersController : ControllerBase
             data = pagedResult
         });
     }
+
+    [HttpGet("{id}")]
+    public async  Task<IActionResult> GetUserByAsync ([FromQuery] string id)
+    {
+        var user = await _userService.GetUserByIdAsync(id);
+        
+        if (user == null)
+        {
+            return NotFound(new
+            {
+                success = false,
+                message = "User not found."
+            });
+        }
+
+        return Ok(new
+        {
+            success = true,
+            message = "Operation completed succussfully.",
+            data = user
+        });
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUser (string id, [FromBody] UpdateUserDto request)
+    {
+        var result = await _userService.UpdateUserAsync(id, request);
+        if(!result.Success)
+        {
+            return BadRequest(new
+            {
+               success = false,
+               message = "Failed to update user.",
+               errors = result.Errors 
+            });
+        }
+
+        return Ok(new
+        {
+           success = true,
+           message = "User updated successfully.",
+           data = result.Data
+        });
+    }
+
+    [HttpPatch("{id}/deactivate")]
+    public async Task<IActionResult> DeactivateUser(string id)
+    {
+        var result = await _userService.DeactivateUserAsync(id);
+
+        if (!result.Success)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                message = "Failed to deactivate user.",
+                errors = result.Errors
+            });
+        }
+
+        return Ok(new
+        {
+            success = true,
+            message = "User deactivated successfully.",
+            data = new {}
+        });
+    }
 }

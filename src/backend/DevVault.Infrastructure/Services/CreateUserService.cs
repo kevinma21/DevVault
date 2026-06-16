@@ -104,4 +104,96 @@ public class UserService : IUserService
             PageSize = pageSize
         };
     }
+
+    public async Task<UserResponseDto?> GetUserByIdAsync (string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null) return null;
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        return new UserResponseDto
+        {
+            Id = user.Id,
+            Email = user.Email!,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            IsActive = user.IsActive,
+            Roles = roles.ToList()
+        };
+    }
+
+    public async Task<UserResult> UpdateUserAsync(string id, UpdateUserDto request)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            return new UserResult
+            {
+                Success = false,
+                Errors = new[] { "User not Found." }
+            };
+        }
+
+        user.FirstName = request.FirstName;
+        user.LastName = request.LastName;
+        user.IsActive = request.IsActive;
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            return new UserResult
+            {
+                Success = false,
+                Errors = result.Errors.Select(e => e.Description)
+            };
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        return new UserResult
+        {
+            Success = true,
+            Data = new UserResponseDto
+            {
+                Id = user.Id,
+                Email = user.Email!,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IsActive = user.IsActive,
+                Roles = roles.ToList()
+            }
+        };
+    }
+
+    public async Task<UserResult> DeactivateUserAsync(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            return new UserResult
+            {
+                Success = false,
+                Errors = new[] { "User not found." }
+            };
+        }
+
+        user.IsActive = false;
+        var result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            return new UserResult
+            {
+                Success = false,
+                Errors = result.Errors.Select(e => e.Description)
+            };
+        }
+
+        return new UserResult
+        {
+            Success = true
+        };
+    }
 }
