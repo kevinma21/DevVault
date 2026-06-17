@@ -137,3 +137,5 @@
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.API/obj/Debug/net10.0/DevVault.API.pdb
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.API/obj/Debug/net10.0/DevVault.API.genruntimeconfig.cache
 /Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.API/obj/Debug/net10.0/ref/DevVault.API.dll
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.API/bin/Debug/net10.0/DevVault.Domain.dll
+/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.API/bin/Debug/net10.0/DevVault.Domain.pdb

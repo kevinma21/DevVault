@@ -642,9 +642,18 @@
           }
         }
       },
+      "DevVault.Domain/1.0.0": {
+        "runtime": {
+          "DevVault.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "DevVault.Infrastructure/1.0.0": {
         "dependencies": {
           "DevVault.Application": "1.0.0",
+          "DevVault.Domain": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "10.0.9",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "10.0.9",
           "Microsoft.EntityFrameworkCore": "10.0.9",
@@ -939,6 +948,11 @@
       "hashPath": "system.identitymodel.tokens.jwt.8.0.1.nupkg.sha512"
     },
     "DevVault.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DevVault.Domain/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
