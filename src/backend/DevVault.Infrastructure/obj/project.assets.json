@@ -591,6 +591,16 @@
         "runtime": {
           "bin/placeholder/DevVault.Application.dll": {}
         }
+      },
+      "DevVault.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/DevVault.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DevVault.Domain.dll": {}
+        }
       }
     }
   },
@@ -1443,11 +1453,17 @@
       "type": "project",
       "path": "../DevVault.Application/DevVault.Application.csproj",
       "msbuildProject": "../DevVault.Application/DevVault.Application.csproj"
+    },
+    "DevVault.Domain/1.0.0": {
+      "type": "project",
+      "path": "../DevVault.Domain/DevVault.Domain.csproj",
+      "msbuildProject": "../DevVault.Domain/DevVault.Domain.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net10.0": [
       "DevVault.Application >= 1.0.0",
+      "DevVault.Domain >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 10.0.9",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 10.0.9",
       "Microsoft.EntityFrameworkCore >= 10.0.9",
@@ -1482,6 +1498,9 @@
           "projectReferences": {
             "/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/DevVault.Application.csproj": {
               "projectPath": "/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Application/DevVault.Application.csproj"
+            },
+            "/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Domain/DevVault.Domain.csproj": {
+              "projectPath": "/Users/kevinpratama/Documents/on_going/DevVault/src/backend/DevVault.Domain/DevVault.Domain.csproj"
             }
           }
         }

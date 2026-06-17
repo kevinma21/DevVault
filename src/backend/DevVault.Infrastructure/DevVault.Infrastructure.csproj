@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DevVault.Application\DevVault.Application.csproj" />
+    <ProjectReference Include="..\DevVault.Domain\DevVault.Domain.csproj" />
   </ItemGroup>
 
 </Project>
