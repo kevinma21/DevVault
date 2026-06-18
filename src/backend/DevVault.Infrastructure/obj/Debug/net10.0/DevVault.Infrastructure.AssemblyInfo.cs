@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DevVault.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9f569d8de9ac1062aee189656ce6f419b11c5fac")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3a0ef7fe6577840bfa11d7bddffd176c4852b2cc")]
 [assembly: System.Reflection.AssemblyProductAttribute("DevVault.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DevVault.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
