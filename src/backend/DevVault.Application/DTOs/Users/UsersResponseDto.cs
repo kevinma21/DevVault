@@ -9,10 +9,3 @@ public class UserResponseDto
     public bool IsActive { get; set; }
     public IList<string> Roles { get; set; } = new List<string>();
 }
-
-public class UserResult
-{
-    public bool Success { get; set; }
-    public UserResponseDto? Data { get; set; }
-    public IEnumerable<string> Errors { get; set; } = new List<string>();
-}

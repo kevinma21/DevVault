@@ -6,9 +6,9 @@ namespace DevVault.Application.Interfaces;
 
 public interface IUserService
 {
-    Task<UserResult> CreateUserAsync (CreateUserDto request);
-    Task<PagedResponse<UserResponseDto>> GetUsersAsync (int pageNumber, int pageSize);
-    Task<UserResponseDto?> GetUserByIdAsync (string id);
-    Task<UserResult> UpdateUserAsync (string id, UpdateUserDto request);
-    Task<UserResult> DeactivateUserAsync (string id);
+    Task<Result<UserResponseDto>> CreateUserAsync (CreateUserDto request);
+    Task<Result<PagedResponse<UserResponseDto>>> GetUsersAsync (int pageNumber, int pageSize);
+    Task<Result<UserResponseDto>> GetUserByIdAsync (string id);
+    Task<Result<UserResponseDto>> UpdateUserAsync (string id, UpdateUserDto request);
+    Task<Result<bool>> DeactivateUserAsync (string id);
 }
