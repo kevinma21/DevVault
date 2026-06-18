@@ -9,7 +9,7 @@ public class Project
     public string Description { get; set; } = string.Empty;
 
     public string OwnerId { get; set; } = string.Empty;
-    public DateTime DateTime { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public ICollection<Secret> Secrets { get; set; } = new List<Secret>();
 }
