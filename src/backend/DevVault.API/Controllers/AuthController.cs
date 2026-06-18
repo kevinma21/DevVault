@@ -28,7 +28,7 @@ public class AuthController : ControllerBase
             { 
                 success = false, 
                 message = "Authentication failed.", 
-                errors = new[] { result.ErrorMessage } 
+                errors = result.Errors
             });
         }
 
@@ -36,7 +36,7 @@ public class AuthController : ControllerBase
         return Ok(new
         {
             success = true,
-            message = "Operation completed successfully.",
+            message = "Login successful.",
             data = result.Data
         });
     }

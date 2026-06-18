@@ -2,55 +2,79 @@ using DevVault.Application.DTOs.Auth;
 using DevVault.Application.Interfaces;
 using DevVault.Infrastructure.Security;
 using DevVault.Infrastructure.Identity;
+using DevVault.Application.DTOs.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace DevVault.Infrastructure.Services;
 
-// This class implements the interface defined in the Application layer
 public class AuthService : IAuthService
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly JwtService _jwtService;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<AuthService> _logger; // Added <AuthService>
 
-    public AuthService(UserManager<ApplicationUser> userManager, JwtService jwtService, IConfiguration configuration)
+
+    public AuthService(UserManager<ApplicationUser> userManager, JwtService jwtService, IConfiguration configuration, ILogger<AuthService> logger) // FIX 1: Added <AuthService>
     {
         _userManager = userManager;
         _jwtService = jwtService;
         _configuration = configuration;
+        _logger = logger;
     }
 
-    public async Task<LoginResult> LoginAsync(LoginDto request)
+    public async Task<Result<LoginResponseDto>> LoginAsync(LoginDto request)
     {
-        // Find the user by their email
-        var user = await _userManager.FindByEmailAsync(request.Email);
-
-        // If user doesn't exist, or password doesn't match, return an error.
-        // We use the exact same error message for both to prevent username enumeration attacks.
-        if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
+        try
         {
-            return new LoginResult 
-            { 
-                Success = false, 
-                ErrorMessage = "Invalid email or password." 
-            };
-        }
-        // Fetch the user's roles from the database
-        var roles = await _userManager.GetRolesAsync(user);
+            var user = await _userManager.FindByEmailAsync(request.Email);
 
-        // Generate the token
-        var token = _jwtService.GenerateToken(user, roles);
-        var expireDays = Convert.ToDouble(_configuration["Jwt:ExpireDays"]);
+            if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
+            {
+                return new Result<LoginResponseDto>
+                { 
+                    Success = false, 
+                    Errors = new[] { "Invalid email or password" }
+                };
+            }
 
-        return new LoginResult
-        {
-            Success = true,
-            Data = new LoginResponseDto
+            // Check if the Administrator has deactivated this account!
+            if (!user.IsActive)
+            {
+                return new Result<LoginResponseDto>
+                {
+                    Success = false,
+                    Errors = new[] { "This account has been deactivated. Please contact your administrator." }
+                };
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var token = _jwtService.GenerateToken(user, roles);
+            var expireDays = Convert.ToDouble(_configuration["Jwt:ExpireDays"]);
+
+            var response = new LoginResponseDto
             {
                 AccessToken = token,
                 ExpiresAt = DateTime.UtcNow.AddDays(expireDays)
-            }
-        };
+            };
+
+            return new Result<LoginResponseDto>
+            {
+                Success = true,
+                Data = response
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "A system error occurred during user login attempt for {Email}.", request.Email);
+            return new Result<LoginResponseDto> 
+            { 
+                Success = false, 
+                Errors = new[] { "An unexpected error occurred during login. Please try again later." } 
+            };
+        }
     }
 }
