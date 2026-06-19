@@ -29,6 +29,7 @@ builder.Services.AddScoped<JwtService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
 
 // 1. Tell ASP.NET Core to use JWT Bearer Authentication
 builder.Services.AddAuthentication(options =>

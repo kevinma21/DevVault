@@ -21,19 +21,33 @@ public class ProjectService : IProjectService
 
     public async Task<Result<ProjectResponseDto>> CreateProjectAsync(CreateProjectDto request, string userId)
     {
-        var project = new Project
-        {
-            Name = request.Name,
-            Description = request.Description,
-            OwnerId = userId,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        _context.Projects.Add(project);
-
         try
-        {
+        {   
+            var project = new Project
+            {
+                Name = request.Name,
+                Description = request.Description,
+                OwnerId = userId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Projects.Add(project);
             await _context.SaveChangesAsync();
+
+             var responseDto = new ProjectResponseDto
+            {
+                Id = project.Id,
+                Name = project.Name,
+                Description = project.Description,
+                OwnerId = project.OwnerId,
+                CreatedAt = project.CreatedAt
+            };
+
+            return new Result<ProjectResponseDto>
+            {
+                Success = true,
+                Data = responseDto
+            };
         }
         catch (Exception ex)
         {
@@ -45,20 +59,5 @@ public class ProjectService : IProjectService
                 Errors = new[] { "An unexpected system error occurred while creating the project. Please try again later." }
             };
         }
-
-        var responseDto = new ProjectResponseDto
-        {
-            Id = project.Id,
-            Name = project.Name,
-            Description = project.Description,
-            OwnerId = project.OwnerId,
-            CreatedAt = project.CreatedAt
-        };
-
-        return new Result<ProjectResponseDto>
-        {
-            Success = true,
-            Data = responseDto
-        };
     }
 }
