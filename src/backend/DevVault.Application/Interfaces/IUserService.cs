@@ -11,4 +11,5 @@ public interface IUserService
     Task<Result<UserResponseDto>> GetUserByIdAsync (string id);
     Task<Result<UserResponseDto>> UpdateUserAsync (string id, UpdateUserDto request);
     Task<Result<bool>> DeactivateUserAsync (string id);
+    Task<Result<bool>> AssignSystemRoleAsync (string targetUserId, string role);
 }

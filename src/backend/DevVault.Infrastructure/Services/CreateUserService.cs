@@ -215,4 +215,41 @@ public class UserService : IUserService
             return new Result<bool> { Success = false, Errors = new[] { "An unexpected system error occurred while deactivating the user." } };
         }
     }
+
+    public async Task<Result<bool>> AssignSystemRoleAsync (string targetUserId, string role)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(targetUserId);
+            if (user == null) 
+            {
+                return new Result<bool> { Success = false, Errors = new[] { "User not found." } };
+            }
+
+            // 1. Remove all existing roles from the user
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            if (currentRoles.Any())
+            {
+                await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            }
+
+            // 2. Assign the new role
+            var addResult = await _userManager.AddToRoleAsync(user, role);
+            if (!addResult.Succeeded)
+            {
+                return new Result<bool> 
+                { 
+                    Success = false, 
+                    Errors = addResult.Errors.Select(e => e.Description).ToArray() 
+                };
+            }
+
+            return new Result<bool> { Success = true };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error assigning system role to user {UserId}.", targetUserId);
+            return new Result<bool> { Success = false, Errors = new[] { "An unexpected error occurred." }};
+        }
+    }
 }

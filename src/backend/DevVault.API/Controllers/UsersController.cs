@@ -94,4 +94,25 @@ public class UsersController : ControllerBase
 
         return Ok(new { success = true, message = "User deactivated successfully.", data = new {} });
     }
+
+    [HttpPost("{id}/roles")]
+    public async Task<IActionResult> AssignRole(string id, [FromBody] AssignSystemRoleDto request)
+    {
+        var result = await _userService.AssignSystemRoleAsync(id, request.Role);
+        if (!result.Success)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                message = "Failed to assign role.",
+                errors = result.Errors
+            });
+        }
+
+        return Ok(new
+        {
+            success = true, 
+            message = "User deactivated successfully."
+        });
+    }
 }
