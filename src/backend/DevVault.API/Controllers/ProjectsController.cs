@@ -56,4 +56,105 @@ public class ProjectsController : ControllerBase
             data = result.Data
         });
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetMyProjects()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId)) return Unauthorized(new { success = false, message = "User not found in token." });
+
+        var result = await _projectService.GetUserProjectsAsync(userId);
+
+        if (!result.Success)
+        {
+            return BadRequest(new { success = false, message = "Failed to fetch projects.", errors = result.Errors });
+        }
+
+        return Ok(new { success = true, message = "Projects retrieved successfully.", data = result.Data });
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetProjectById(string id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId)) return Unauthorized(new { success = false, message = "User not found in token." });
+
+        var result = await _projectService.GetProjectByIdAsync(id, userId);
+
+        if (!result.Success)
+        {
+            // If the service couldn't find it (or the user doesn't own it), return a 404 Not Found
+            return NotFound(new { success = false, message = "Project not found.", errors = result.Errors });
+        }
+
+        return Ok(new { success = true, message = "Project retrieved successfully.", data = result.Data });
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteProject(string id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId)) return Unauthorized(new { success = false, message = "User not found in token." });
+
+        var result = await _projectService.DeleteProjectAsync(id, userId);
+
+        if (!result.Success)
+        {
+            return BadRequest(new { success = false, message = "Failed to delete project.", errors = result.Errors });
+        }
+
+        return Ok(new { success = true, message = "Project deleted successfully.", data = new {} });
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateProject(string id, [FromBody] UpdateProjectDto request)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId)) return Unauthorized(new { success = false, message = "User not found in token." });
+
+        var result = await _projectService.UpdateProjectAsync(id, request, userId);
+
+        if (!result.Success)
+        {
+            return BadRequest(new { success = false, message = "Failed to update project.", errors = result.Errors });
+        }
+
+        return Ok(new { success = true, message = "Project updated successfully.", data = result.Data });
+    }
+
+    [HttpPost("{id}/members")]
+    public async Task<IActionResult> AssignMember(string id, [FromBody] AssignMemberDto request)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var result = await _projectService.AssignMemberAsync(id, request, userId);
+        if (!result.Success) return BadRequest(new { success = false, message = "Failed to assign member.", errors = result.Errors });
+
+        return Ok(new { success = true, message = "Member assigned successfully." });
+    }
+
+    [HttpDelete("{id}/members/{memberId}")]
+    public async Task<IActionResult> RemoveMember(string id, string memberId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var result = await _projectService.RemoveMemberAsync(id, memberId, userId);
+        if (!result.Success) return BadRequest(new { success = false, message = "Failed to remove member.", errors = result.Errors });
+
+        return Ok(new { success = true, message = "Member removed successfully." });
+    }
+
+    [HttpGet("{id}/members")]
+    public async Task<IActionResult> GetMembers(string id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var result = await _projectService.GetProjectMembersAsync(id, userId);
+        if (!result.Success) return BadRequest(new { success = false, message = "Failed to fetch members.", errors = result.Errors });
+
+        return Ok(new { success = true, message = "Members retrieved successfully.", data = result.Data });
+    }
 }
