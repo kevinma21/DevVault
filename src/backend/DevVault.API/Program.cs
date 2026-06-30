@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+// Infrastructure Services
+builder.Services.AddSingleton<ICryptographyService, CryptographyService>();
 
 // Register the DbContext to use PostgreSQL
 builder.Services.AddDbContext<DevVaultDbContext>(options =>
@@ -30,6 +32,7 @@ builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<ISecretService, SecretService>();
 
 // 1. Tell ASP.NET Core to use JWT Bearer Authentication
 builder.Services.AddAuthentication(options =>
