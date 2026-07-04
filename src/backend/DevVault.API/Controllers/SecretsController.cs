@@ -12,10 +12,12 @@ namespace DevVault.API.Controllers;
 public class SecretsController : ControllerBase
 {
     private readonly ISecretService _secretService;
+    private readonly IAuditService _auditService;
 
-    public SecretsController (ISecretService secretService)
+    public SecretsController (ISecretService secretService, IAuditService auditService)
     {
         _secretService = secretService;
+        _auditService = auditService;
     }
 
     [HttpPost]
@@ -52,7 +54,15 @@ public class SecretsController : ControllerBase
         if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
         var result = await _secretService.RevealSecretAsync(secretId, projectId, userId);
-        if (!result.Success) return BadRequest(new { success = false, errors = result.Errors });
+        if (!result.Success || result.Data == null) return BadRequest(new { success = false, errors = result.Errors });
+
+        await _auditService.LogActionAsync(
+            userId: userId,
+            entityType: "Secret",
+            entityId: secretId,
+            action: "Reveal",
+            details: $"Revealed secret '{result.Data.Key}'"
+        );
 
         // WARNING: This response contains the plain-text API key
         return Ok(new { success = true, data = result.Data });

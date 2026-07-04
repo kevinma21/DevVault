@@ -15,14 +15,16 @@ public class AuthService : IAuthService
     private readonly JwtService _jwtService;
     private readonly IConfiguration _configuration;
     private readonly ILogger<AuthService> _logger; // Added <AuthService>
+    private readonly IAuditService _auditService;
 
 
-    public AuthService(UserManager<ApplicationUser> userManager, JwtService jwtService, IConfiguration configuration, ILogger<AuthService> logger) // FIX 1: Added <AuthService>
+    public AuthService(UserManager<ApplicationUser> userManager, JwtService jwtService, IConfiguration configuration, ILogger<AuthService> logger, IAuditService auditService) // FIX 1: Added <AuthService>
     {
         _userManager = userManager;
         _jwtService = jwtService;
         _configuration = configuration;
         _logger = logger;
+        _auditService = auditService;
     }
 
     public async Task<Result<LoginResponseDto>> LoginAsync(LoginDto request)
@@ -49,6 +51,14 @@ public class AuthService : IAuthService
                     Errors = new[] { "This account has been deactivated. Please contact your administrator." }
                 };
             }
+
+            await _auditService.LogActionAsync(
+                userId: user.Id, 
+                entityType: "Authentication", 
+                entityId: user.Id, 
+                action: "Login", 
+                details: "User successfully authenticated."
+            );
 
             var roles = await _userManager.GetRolesAsync(user);
 

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 using System.Text;
+using DevVault.Infrastructure.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ISecretService, SecretService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
 
 // 1. Tell ASP.NET Core to use JWT Bearer Authentication
 builder.Services.AddAuthentication(options =>

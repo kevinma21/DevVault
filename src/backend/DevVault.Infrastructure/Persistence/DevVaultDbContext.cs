@@ -14,6 +14,7 @@ public class DevVaultDbContext : IdentityDbContext<ApplicationUser, ApplicationR
     public DbSet<Project> Projects { get; set; }
     public DbSet<Secret> Secrets { get; set; }
     public DbSet<ProjectMember> ProjectMembers { get; set; }
+    public DbSet<AuditLog> AuditLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -29,5 +30,8 @@ public class DevVaultDbContext : IdentityDbContext<ApplicationUser, ApplicationR
             .HasForeignKey(s => s.ProjectId)
             // If a Project is deleted, automatically wipe all its Secrets from the database
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<AuditLog>()
+            .HasKey(a => a.Id);
     }
 }
