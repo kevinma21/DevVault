@@ -27,7 +27,7 @@ public class AuthController : ControllerBase
             return Unauthorized(new 
             { 
                 success = false, 
-                message = "Authentication failed.", 
+                message = "Invalid Email or Password.", 
                 errors = result.Errors
             });
         }

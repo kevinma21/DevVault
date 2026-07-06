@@ -13,6 +13,17 @@ using DevVault.Infrastructure.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// define the CORS policy to allow requests from the React frontend running on Vite's default port (5173)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // The exact Vite port
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
@@ -91,6 +102,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Activate the CORS Policy (MUST be before Auth)
+app.UseCors("AllowReactFrontend");
 
 app.UseAuthentication(); // Checks the token
 app.UseAuthorization();  // Checks the roles
