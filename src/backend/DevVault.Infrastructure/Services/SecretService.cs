@@ -105,6 +105,7 @@ public class SecretService : ISecretService
                     Id = s.Id,
                     ProjectId = s.ProjectId,
                     Key = s.Key,
+                    CreatedAt = s.CreatedAt
                     // Values remain hidden when just listing secrets
                 })
                 .ToListAsync();

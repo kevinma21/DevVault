@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Layout from '../components/Layout';
 import axios from 'axios';
@@ -21,6 +22,8 @@ export default function Dashboard() {
     const [newProjectDesc, setNewProjectDesc] = useState('');
     const [isCreating, setIsCreating] = useState(false);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         // Fetch projects on load
         const fetchProjects = async () => {
@@ -42,7 +45,7 @@ export default function Dashboard() {
         fetchProjects();
     }, [refreshKey]);
 
-    const handleCreateProject = async (e: React.FormEvent) => {
+    const handleCreateProject = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsCreating(true);
         setError('');
@@ -98,9 +101,10 @@ export default function Dashboard() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
-            <div 
-              key={project.id} 
-              className="rounded-xl border border-slate-800 bg-slate-900 p-6 transition-colors hover:border-slate-700 cursor-pointer"
+            <div
+                onClick={() => navigate('/projects/' + project.id)}
+                key={project.id} 
+                className="rounded-xl border border-slate-800 bg-slate-900 p-6 transition-colors hover:border-slate-700 cursor-pointer"
             >
                 <h3 className="text-lg font-semibold text-slate-50">{project.name}</h3>
                 <p className="mt-2 text-sm text-slate-400 line-clamp-2">
