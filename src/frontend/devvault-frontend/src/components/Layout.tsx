@@ -1,5 +1,20 @@
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 
+const parseJwt = (token: string) => {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        console.log(e);
+        return null;
+    }
+};
+
 function Layout({ children }: { children: React.ReactNode }) {
     const navigate = useNavigate();
     const location = useLocation();
@@ -9,11 +24,31 @@ function Layout({ children }: { children: React.ReactNode }) {
         navigate('/login');
     }
 
+    const token = localStorage.getItem('accessToken');
+    let isAdmin = false;
+
+    if (token) {
+        const decoded = parseJwt(token);
+        const roleClaims = decoded?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || decoded?.role;
+        
+        if (Array.isArray(roleClaims)) {
+            isAdmin = roleClaims.includes('Administrator');
+        } else {
+            isAdmin = roleClaims === 'Administrator';
+        }
+    }
     const navItems = [
-        { name: 'Dashboard', path: '/dashboard' },
+        { name: 'Project', path: '/projects' },
         { name: 'Users', path: '/users' },
         { name: 'Audit', path: '/audit' }
     ];
+
+    const visibleNavItems = navItems.filter(item => {
+        if (item.name === 'Users' && !isAdmin) {
+            return false;
+        }
+        return true;
+    })
 
     return (
         <div className="flex min-h-screen bg-slate-950 text-slate-50">
@@ -24,7 +59,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                 </div>
 
                 <nav className="flex-1 space-y-1 px-3 py-4">
-                    {navItems.map((item) => {
+                    {visibleNavItems.map((item) => {
                         const isActive = location.pathname === item.path;
                         return (
                             <Link

@@ -25,7 +25,7 @@ public class UserService : IUserService
     {
         try
         {
-            var role = await _roleManager.FindByIdAsync(request.RoleId);
+            var role = await _roleManager.FindByNameAsync(request.RoleName);
             if (role == null)
             {
                 return new Result<UserResponseDto> { Success = false, Errors = new[] { "Invalid Role Id Provided." } };

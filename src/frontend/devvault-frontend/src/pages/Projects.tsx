@@ -11,7 +11,7 @@ interface Project {
   description: string;
 }
 
-export default function Dashboard() {
+export default function Projects() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
