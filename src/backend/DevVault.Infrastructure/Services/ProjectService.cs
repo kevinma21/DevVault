@@ -70,16 +70,16 @@ public class ProjectService : IProjectService
     {
         try
         {
-            // SECURITY: Only fetch projects where the OwnerId matches the logged-in user
+            // SECURITY: Fetch project where the user is the Owner OR they are in the ProjectMembers table
             var projects = await _context.Projects
-                .Where(p => p.OwnerId == userId)
+                .Where(p => p.OwnerId == userId || _context.ProjectMembers.Any(pm => pm.ProjectId == p.Id && pm.UserId == userId))
                 .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new ProjectResponseDto
                 {
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
-                    OwnerId = p.OwnerId,
+                    OwnerId = p.OwnerId, 
                     CreatedAt = p.CreatedAt
                 })
                 .ToListAsync();
@@ -97,12 +97,27 @@ public class ProjectService : IProjectService
     {
         try
         {
-            var project = await _context.Projects
-                .FirstOrDefaultAsync(p => p.Id == projectId && p.OwnerId == userId);
-
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
             if (project == null)
             {
                 return new Result<ProjectResponseDto> { Success = false, Errors = new[] { "Project not found or access denied." } };
+            }
+
+            string currentUserRole = "";
+
+            if (project.OwnerId == userId)
+            {
+                currentUserRole = "Owner";
+            }
+            else
+            {
+                var member = await _context.ProjectMembers.FirstOrDefaultAsync(pm => pm.ProjectId == projectId && pm.UserId == userId);
+                if (member == null) return new Result<ProjectResponseDto>
+                {
+                    Success = false,
+                    Errors = new[] { "Access denied." }
+                };
+                currentUserRole = member.Role;
             }
 
             return new Result<ProjectResponseDto>
@@ -114,7 +129,8 @@ public class ProjectService : IProjectService
                     Name = project.Name,
                     Description = project.Description,
                     OwnerId = project.OwnerId,
-                    CreatedAt = project.CreatedAt
+                    CreatedAt = project.CreatedAt,
+                    CurrentUserRole = currentUserRole
                 }
             };
         }
@@ -265,17 +281,25 @@ public class ProjectService : IProjectService
 
             if (!isOwner && !isMember) return new Result<IEnumerable<ProjectMemberResponseDto>> { Success = false, Errors = new[] { "Access denied." } };
 
+
+            // Change: Grabbed Email
             var members = await _context.ProjectMembers
                 .Where(pm => pm.ProjectId == projectId)
-                .Select(pm => new ProjectMemberResponseDto
-                {
-                    UserId = pm.UserId,
-                    Role = pm.Role,
-                    JoinedAt = pm.JoinedAt
-                    // Email would typically be fetched via a join with Identity, 
-                    // or by querying the UserManager directly afterwards.
-                })
+                .Join(
+                    _context.Users,
+                    pm => pm.UserId,
+                    u => u.Id,
+                    (pm, u) => new ProjectMemberResponseDto
+                    {
+                        UserId = pm.UserId,
+                        Role = pm.Role,
+                        JoinedAt = pm.JoinedAt,
+                        Email = u.Email ?? "",
+                    }
+                )
                 .ToListAsync();
+
+                // Console.WriteLine(members);
 
             return new Result<IEnumerable<ProjectMemberResponseDto>> { Success = true, Data = members };
         }
