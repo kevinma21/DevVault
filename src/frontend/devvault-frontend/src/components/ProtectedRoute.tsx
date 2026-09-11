@@ -41,7 +41,7 @@ export default function ProtectedRoute({ children, requiredRole }: ProtectedRout
 
        
         if (!hasRole) {
-            return <Navigate to="/dashboard" replace />;
+            return <Navigate to="/projects" replace />;
         }
     }
 
