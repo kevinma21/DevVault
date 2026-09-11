@@ -12,6 +12,12 @@ interface Secret {
   createdAt: string;
 }
 
+interface ProjectMember {
+  userId: string,
+  email: string,
+  role: string,
+}
+
 export default function ProjectSecrets() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -27,19 +33,33 @@ export default function ProjectSecrets() {
   const [newSecretValue, setNewSecretValue] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   
-  // It stores data like: { "secret-123": "mySuperSecretPassword" }
+  
   const [revealedValues, setRevealedValues] = useState<Record<string, string>>({});
   const [isRevealing, setIsRevealing] = useState<string | null>(null); // Tracks which button is loading
+
+  const [members, setMembers] = useState<ProjectMember[]>([]);
+  const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
+  const [newMemberEmail, setNewMemberEmail] = useState('');
+  const [newMemberRole, setNewMemberRole] = useState('Viewer');
+  const [isAssigning, setIsAssigning] = useState(false);
+
+  const [userRole, setUserRole] = useState<string>('');
+
 
   useEffect(() => {
     const fetchSecrets = async () => {
       setIsLoading(true);
       try {
-        const response = await api.get(`/projects/${id}/secrets`);
-        setSecrets(response.data.data);
+        const [secretsRes, projectRes] = await Promise.all ([
+          api.get(`/projects/${id}/secrets`),
+          api.get(`/projects/${id}`)
+        ]);
+
+        setSecrets(secretsRes.data.data);
+        setUserRole(projectRes.data.data.currentUserRole)
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
-          setError(err.response?.data?.message || 'Failed to load secrets.');
+          setError(err.response?.data?.message || 'Failed to load vault secrets.');
         } else {
           setError('An unexpected error occurred.');
         }
@@ -125,7 +145,61 @@ export default function ProjectSecrets() {
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!"); // We can replace this with a nice toast notification later
+    alert("Copied to clipboard!"); 
+  };
+
+  const fetchMembers = async () => {
+    try {
+      const response = await api.get(`/projects/${id}/members`);
+      setMembers(response.data.data);
+      
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.message || "Failed to fetch members.");
+      } else {
+        alert("An unexpected error occurred during fetching.");
+      }
+    }
+  };
+
+  const handleOpenMembers = () => {
+    fetchMembers();
+    setIsMembersModalOpen(true);
+  }
+
+  const handleAssignMember = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsAssigning(true);
+
+    try {
+      await api.post(`/projects/${id}/members`, {
+        email: newMemberEmail,
+        role: newMemberRole
+      });
+
+      setNewMemberEmail('');
+      setNewMemberRole('Viewer');
+      await fetchMembers();
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+          alert(err.response?.data?.message || 'Failed to assign member.');
+      }
+    } finally {
+      setIsAssigning(false);
+    }
+  };
+
+  const handleRemoveMember = async (memberId: string) => {
+    if (!window.confirm("Are you sure you want to remove this user's access?")) return;
+
+    try {
+      await api.delete(`/projects/${id}/members/${memberId}`);
+      await fetchMembers();
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.message || 'Failed to remove member.');
+      }
+    }
   };
 
   return (
@@ -143,12 +217,30 @@ export default function ProjectSecrets() {
           <h2 className="text-2xl font-bold text-slate-50">Secrets Management</h2>
           <p className="text-sm text-slate-400 font-mono">Project ID: {id}</p>
         </div>
-        <button
-            onClick={() => setIsAddModalOpen(true)}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
-        >
-          + Add Secret
-        </button>
+        <div className="flex items-center justify-end">
+          {!isLoading && (
+            <>
+              {userRole === 'Owner' && (
+                <button 
+                  onClick={handleOpenMembers}
+                  className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-slate-700 transition-colors mr-3"
+                >
+                    Manage Access
+                </button>
+              )}
+
+              {userRole !== 'Viewer' && (
+                <button
+                    onClick={() => setIsAddModalOpen(true)}
+                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                >
+                    + Add Secret
+                </button>
+              )}
+            </>
+          )}
+        </div>
+        
       </div>
 
       {error && (
@@ -207,12 +299,14 @@ export default function ProjectSecrets() {
                           Copy
                         </button>
                       )}
-                      <button
-                        onClick={() => handleDelete(secret.id)}
-                        className="text-rose-500 hover:text-rose-400 font-medium"
-                      >
-                        Delete
-                      </button>
+                      {userRole !== 'Viewer' && (
+                          <button
+                            onClick={() => handleDelete(secret.id)}
+                            className="text-rose-500 hover:text-rose-400 font-medium"
+                          >
+                            Delete
+                          </button>
+                      )}
                     </td>
                   </tr>
                 );
@@ -268,6 +362,77 @@ export default function ProjectSecrets() {
                     </div>
                 </form>
             </div>
+        </div>
+      )}
+
+      {/* --- MANAGE ACCESS MODAL --- */}
+      {isMembersModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-slate-50">Manage Access</h3>
+                <button onClick={() => setIsMembersModalOpen(false)} className="text-slate-400 hover:text-slate-200">
+                    ✕
+                </button>
+            </div>
+
+            {/* Invite Form */}
+            <form onSubmit={handleAssignMember} className="mb-8 space-y-4 rounded-lg bg-slate-950 p-4 border border-slate-800">
+                <h4 className="text-sm font-semibold text-slate-300">Invite Team Member</h4>
+                <div className="flex gap-2">
+                    <input
+                        type="email"
+                        value={newMemberEmail}
+                        onChange={(e) => setNewMemberEmail(e.target.value)}
+                        className="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-50 text-sm focus:border-blue-500 focus:outline-none"
+                        placeholder="developer@example.com"
+                        required
+                    />
+                    <select
+                        value={newMemberRole}
+                        onChange={(e) => setNewMemberRole(e.target.value)}
+                        className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-slate-50 text-sm focus:border-blue-500 focus:outline-none"
+                    >
+                        <option value="Editor">Editor</option>
+                        <option value="Viewer">Viewer</option>
+                    </select>
+                </div>
+                <button
+                    type="submit"
+                    disabled={isAssigning}
+                    className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                >
+                    {isAssigning ? 'Inviting...' : 'Grant Access'}
+                </button>
+            </form>
+
+            <h4 className="text-sm font-semibold text-slate-300 mb-3">Current Members</h4>
+            <div className="max-h-60 overflow-y-auto space-y-2">
+                {members.length === 0 ? (
+                    <p className="text-sm text-slate-500 italic">No members assigned yet.</p>
+                ) : (
+                    members.map(member => (
+                        <div key={member.userId} className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-800/50 p-3">
+                            <div>
+                                <p className="text-sm font-medium text-slate-200">{member.email}</p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <span className="text-xs font-medium text-blue-400 bg-blue-500/10 px-2 py-1 rounded-full border border-blue-500/20">
+                                    {member.role}
+                                </span>
+                                <button 
+                                    onClick={() => handleRemoveMember(member.userId)}
+                                    className="text-slate-500 hover:text-rose-500 transition-colors"
+                                    title="Remove Access"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+          </div>
         </div>
       )}
     </Layout>
