@@ -26,8 +26,9 @@ public class SecretService : ISecretService
     private async Task<bool> UserHasProjectAccessAsync (string projectId, string userId)
     {
         var isOwner = await _context.Projects.AnyAsync(p => p.Id == projectId && p.OwnerId == userId);
-        var isMember = await _context.ProjectMembers.AnyAsync(pm => pm.ProjectId == projectId && pm.UserId == userId);
-        return isOwner || isMember;
+       
+        var isEditor = await _context.ProjectMembers.AnyAsync(pm => pm.ProjectId == projectId && pm.UserId == userId && pm.Role == "Editor");
+        return isOwner || isEditor;
     }
 
     public async Task<Result<SecretResponseDto>> CreateSecretAsync (CreateSecretDto request, string userId)
