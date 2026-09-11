@@ -31,7 +31,7 @@ function Login() {
         localStorage.setItem('accessToken', token);
 
         // redirect to the dashboard
-        navigate('/dashboard');
+        navigate('/projects');
 
     } 
     catch (err: unknown) 
