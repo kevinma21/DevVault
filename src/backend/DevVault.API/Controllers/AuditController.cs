@@ -26,6 +26,6 @@ public class AuditController : ControllerBase
             return BadRequest(new { success = false, errors = result.Errors });
         }
 
-        return Ok(new { success = true, data = result.Data });
+        return Ok(new { success = true, message = "Audit logs retrieved successfully.", data = result.Data });
     }
 }
