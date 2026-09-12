@@ -1,3 +1,4 @@
+using DevVault.Application.DTOs.Audit;
 using DevVault.Application.DTOs.Common;
 using DevVault.Application.Interfaces;
 using DevVault.Domain.Entities;
@@ -43,25 +44,36 @@ public class AuditService : IAuditService
         }
     }
 
-    public async Task<Result<IEnumerable<object>>> GetLogAsync()
+    public async Task<Result<IEnumerable<AuditLogResponseDto>>> GetLogAsync()
     {
         try
         {
             var logs = await _context.AuditLogs
-                .OrderByDescending(a => a.Timestamp)
-                .Take(100) // limit for performance
-                .ToListAsync();
+            .Join(
+                _context.Users,
+                audit => audit.UserId,
+                user => user.Id,
+                (audit, user) => new AuditLogResponseDto
+                {
+                    Id = audit.Id,
+                    UserEmail = !string.IsNullOrEmpty(user.Email) ? user.Email : (user.UserName ?? "Unknown User"),
+                    EntityType = audit.EntityType,
+                    EntityId = audit.EntityId,
+                    Action = audit.Action,
+                    Details = audit.Details,
+                    Timestamp = audit.Timestamp
+                }
+            )
+            .OrderByDescending(a => a.Timestamp)
+            .Take(100) 
+            .ToListAsync();
 
-            return new Result<IEnumerable<object>>
-            {
-                Success = true,
-                Data = logs
-            };
+            return new Result<IEnumerable<AuditLogResponseDto>> { Success = true, Data = logs };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error fetching audit logs.");
-            return new Result<IEnumerable<object>> { Success = false, Errors = new[] { "Could not retrieve audit logs." } };
+            return new Result<IEnumerable<AuditLogResponseDto>> { Success = false, Errors = new[] { "Could not retrieve audit logs." } };
         }
     }
 }
