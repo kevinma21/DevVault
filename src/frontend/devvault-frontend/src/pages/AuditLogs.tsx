@@ -98,32 +98,33 @@ export default function AuditLogs() {
                                     <th className="px-6 py-4 font-medium">Details</th>
                                 </tr>
                             </thead>
+
+                            <tbody className='divide-y divide-slate-800/50'>
+                                {logs.map((log) => (
+                                    <tr key={log.id} className='hover:bg-slate-800/20 transition-colors'>
+                                        <td className="px-6 py-4 whitespace-nowrap text-slate-400">
+                                            {new Date(log.timestamp).toLocaleString()}
+                                        </td>
+                                        <td className="px-6 py-4 font-medium text-slate-200">
+                                            {log.userEmail}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className={getActionBadge(log.action)}>
+                                                {log.action.toUpperCase()}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className="text-slate-400 font-mono text-xs">
+                                                {log.entityType}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {log.details}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
                         </table>
-                        <tbody className='devide-y devide-slate-800/50'>
-                            {logs.map((log) => (
-                                <tr key={log.id} className='hover:bg-slate-800/20 transition-colors'>
-                                    <td className="px-6 py-4 whitespace-nowrap text-slate-400">
-                                        {new Date(log.timestamp).toLocaleString()}
-                                    </td>
-                                    <td className="px-6 py-4 font-medium text-slate-200">
-                                        {log.userEmail}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={getActionBadge(log.action)}>
-                                            {log.action.toUpperCase()}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className="text-slate-400 font-mono text-xs">
-                                            {log.entityType}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        {log.details}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
                     </div>
                 </div>
             )}
