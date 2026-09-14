@@ -18,27 +18,23 @@ const parseJwt = (token: string) => {
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
-    requiredRole?: string;
+    allowedRoles?: string[];
 }
 
-export default function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
+export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
     const token = localStorage.getItem('accessToken');
 
     if (!token) {
         return <Navigate to="/login" replace />;
     }
 
-    if (requiredRole) {
+    if (allowedRoles && allowedRoles.length > 0) {
         const decoded = parseJwt(token);
         const roleClaim = decoded?.['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || decoded?.role;
         
-        let hasRole;
-        if (Array.isArray(roleClaim)) {
-            hasRole = roleClaim.includes(requiredRole);
-        } else {
-            hasRole = roleClaim === requiredRole;
-        }
+        const userRoles = Array.isArray(roleClaim) ? roleClaim : (roleClaim ? [roleClaim] : []);
 
+        const hasRole = userRoles.some(role => allowedRoles.includes(role));
        
         if (!hasRole) {
             return <Navigate to="/projects" replace />;

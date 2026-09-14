@@ -17,9 +17,9 @@ public class AuditController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetLogs()
+    public async Task<IActionResult> GetLogs([FromQuery] int page = 1, [FromQuery] int limit = 20)
     {
-        var result = await _auditService.GetLogAsync();
+        var result = await _auditService.GetLogAsync(page, limit);
         
         if (!result.Success)
         {

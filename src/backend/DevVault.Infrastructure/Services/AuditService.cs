@@ -3,6 +3,7 @@ using DevVault.Application.DTOs.Common;
 using DevVault.Application.Interfaces;
 using DevVault.Domain.Entities;
 using DevVault.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -44,11 +45,11 @@ public class AuditService : IAuditService
         }
     }
 
-    public async Task<Result<IEnumerable<AuditLogResponseDto>>> GetLogAsync()
+    public async Task<Result<object>> GetLogAsync(int page = 1, int limit = 20)
     {
         try
         {
-            var logs = await _context.AuditLogs
+            var query = _context.AuditLogs
             .Join(
                 _context.Users,
                 audit => audit.UserId,
@@ -56,24 +57,41 @@ public class AuditService : IAuditService
                 (audit, user) => new AuditLogResponseDto
                 {
                     Id = audit.Id,
-                    UserEmail = !string.IsNullOrEmpty(user.Email) ? user.Email : (user.UserName ?? "Unknown User"),
+                    UserEmail = !string.IsNullOrEmpty(user.Email) ? user.Email : (user.FirstName ?? "Unknown User"),
                     EntityType = audit.EntityType,
                     EntityId = audit.EntityId,
                     Action = audit.Action,
                     Details = audit.Details,
                     Timestamp = audit.Timestamp
                 }
-            )
-            .OrderByDescending(a => a.Timestamp)
-            .Take(100) 
-            .ToListAsync();
+            );
+            
+            var totalCount = await query.CountAsync();
 
-            return new Result<IEnumerable<AuditLogResponseDto>> { Success = true, Data = logs };
+            var logs = await query
+                .OrderByDescending(a => a.Timestamp)
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToListAsync();
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)limit);
+
+            return new Result<object>
+            {
+                Success = true,
+                Data = new
+                {
+                    items = logs,
+                    totalCount = totalCount,
+                    currentPage = page,
+                    totalPages = totalPages
+                }
+            };
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error fetching audit logs.");
-            return new Result<IEnumerable<AuditLogResponseDto>> { Success = false, Errors = new[] { "Could not retrieve audit logs." } };
+            return new Result<object> { Success = false, Errors = new[] { "Could not retrieve audit logs." } };
         }
     }
 }

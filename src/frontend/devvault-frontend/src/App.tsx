@@ -3,6 +3,7 @@ import Login from './pages/Login'
 import Projects from './pages/Projects'
 import ProjectSecrets from './pages/ProjectSecrets'
 import Users from './pages/Users';
+import AuditLogs from './pages/AuditLogs';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -33,8 +34,17 @@ function App() {
         <Route
           path="/users"
           element={
-            <ProtectedRoute requiredRole='Administrator'>
+            <ProtectedRoute allowedRoles={['Administrator']}>
                 <Users />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route 
+          path="/audit"
+          element={
+            <ProtectedRoute allowedRoles={['Administrator', 'Auditor']}>
+                <AuditLogs />
             </ProtectedRoute>
           }
         />

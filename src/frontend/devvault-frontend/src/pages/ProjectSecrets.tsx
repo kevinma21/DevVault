@@ -33,7 +33,6 @@ export default function ProjectSecrets() {
   const [newSecretValue, setNewSecretValue] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   
-  
   const [revealedValues, setRevealedValues] = useState<Record<string, string>>({});
   const [isRevealing, setIsRevealing] = useState<string | null>(null); // Tracks which button is loading
 
