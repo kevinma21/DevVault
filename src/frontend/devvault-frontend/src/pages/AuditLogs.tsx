@@ -18,21 +18,13 @@ export default function AuditLogs() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [totalCount, setTotalCount] = useState(0);
-
     useEffect(() => {
         const fetchLogs = async () => {
             setIsLoading(true);
 
             try {
-                const response = await api.get(`/audit?page=${currentPage}&limit=20`);
-
-                setLogs(response.data.data.items);
-                setTotalPages(response.data.data.totalPages);
-                setTotalCount(response.data.data.totalCount);
-
+                const response = await api.get('/audit');
+                setLogs(response.data.data);
             } catch (err: unknown) {
                 if (axios.isAxiosError(err)) {
                     setError(err.response?.data?.message || 'Failed to load audit logs.');
@@ -45,7 +37,7 @@ export default function AuditLogs() {
         }
 
         fetchLogs();
-    }, [currentPage]);
+    }, []);
 
     const getActionBadge = (action: string) => {
         const baseClasses = "px-2.5 py-0.5 rounded-full text-xs font-medium border";
